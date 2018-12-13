@@ -52,7 +52,7 @@ def login():
 				session['user_id'] = user.id
 				session['role'] = user.role
 				flash('Welcome!')
-				return redirect(url_for('tasks'))
+				return redirect(url_for('selections'))
 			else:
 				error = 'Invalid username or password'
 	return render_template('login.html', form=form, error=error)
@@ -77,3 +77,5 @@ def register():
 				error = 'That username and/or email already exist.'
 				return render_template('register.html', form=form, error=error)
 	return render_template('register.html', form=form, error=error)
+
+

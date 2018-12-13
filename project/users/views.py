@@ -62,7 +62,7 @@ def login():
                 session['user_id'] = user.id
                 session['name'] = user.name
                 flash('Welcome!')
-                return redirect(url_for('tasks.html'))
+                return redirect(url_for('users.selections'))
             else:
                 error = 'Invalid username or password.'
     return render_template('login.html', form=form, error=error)
@@ -88,3 +88,7 @@ def register():
                 error = 'That username and/or email already exist.'
                 return render_template('register.html', form=form, error=error)
     return render_template('register.html', form=form, error=error)
+
+@users_blueprint.route('/selections/', methods=['GET', 'POST'])
+def selections():
+    return render_template('selections.html')
