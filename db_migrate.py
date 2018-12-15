@@ -35,4 +35,4 @@ with sqlite3.connect(DATABASE_PATH) as connection:
 	c.executemany("""INSERT INTO users (name, email, password,
 					role) VALUES (?, ?, ?, ?)""", data)
 
-	c.execute("DROP TABLE old_users")
+	c.execute("DROP TABLE old_users")	

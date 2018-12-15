@@ -3,13 +3,27 @@
 
 <h1>EPL Predictor Standings</h1>
 <br>
+<a href="{{ url_for('users.logout') }}">Logout</a>
 
-<table>
-	<tr>
-		<th>Name</th>
-		<th>Wins</th>
-		<th>Losses</th>
-		<th>Points</th>
-	</tr>
-	{% for }
-</table>
+<div class="datagrid">
+	<table>
+		<thead>
+			<tr>
+				<th width="200px"><strong>Name</strong></th>
+				<th width="75px"><strong>Wins</strong></th>
+				<th width="75px"><strong>Losses</strong></th>
+				<th width="75px"><strong>Points</strong></th>
+			</tr>
+		</thead>
+		{% for player in participants %}
+			<tr>
+				<td>{{ player.name }}</td>
+				<td>{{ player.wins }}</td>
+				<td>{{ player.losses }}</td>
+				<td>{{ player.points }}</td>
+			</tr>
+		{% endfor %}
+	</table>
+</div>
+
+{% endblock %}

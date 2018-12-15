@@ -9,7 +9,7 @@ from sqlalchemy.exc import IntegrityError
 
 from .forms import RegisterForm, LoginForm
 from project import db, bcrypt
-from project.models import User
+from project.models import User, Standing
 
 
 ################
@@ -33,6 +33,9 @@ def login_required(test):
             flash('You need to login first.')
             return redirect(url_for('users.login'))
     return wrap
+
+def participants():
+    return db.session.query(Standing).order_by(Standing.points.desc())
 
 
 ################
@@ -92,3 +95,7 @@ def register():
 @users_blueprint.route('/selections/', methods=['GET', 'POST'])
 def selections():
     return render_template('selections.html')
+
+@users_blueprint.route('/standings/', methods=['GET', 'POST'])
+def standings():
+    return render_template('standings.html', participants=participants())

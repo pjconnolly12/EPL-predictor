@@ -20,14 +20,14 @@ class User(db.Model):
 	def __repr__(self):
 		return '<User {0}>'.format(self.name)
 
-class standings(db.Model):
+class Standing(db.Model):
 	
 	__tablename__ = 'standings'
 
-	name = db.Column(db.String, unique=True, nullable=False)
-	wins = db.Column(db.Integer, unique=True, nullable=False)
-	losses = db.Column(db.Integer, unique=True, nullable=False)
-	points = db.Column(db.Integer, unique=True, nullable=False)
+	name = db.Column(db.String, primary_key=True, unique=True, nullable=False)
+	wins = db.Column(db.Integer, unique=False, nullable=False)
+	losses = db.Column(db.Integer, unique=False, nullable=False)
+	points = db.Column(db.Integer, unique=False, nullable=False)
 
 	def __init__(self, name=None, wins=None, losses=None, points=None):
 		self.name = name
@@ -36,4 +36,4 @@ class standings(db.Model):
 		self.points = points
 
 	def __repr__(self):
-		return '<standings {0}>'.format(self.name)
+		return '<Standing {0}>'.format(self.name)
