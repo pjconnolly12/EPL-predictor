@@ -82,8 +82,11 @@ def register():
                 form.email.data,
                 bcrypt.generate_password_hash(form.password.data),
             )
+            new_team = Standing(
+                form.name.data, 0, 0, 0)
             try:
                 db.session.add(new_user)
+                db.session.add(new_team)
                 db.session.commit()
                 flash('Thanks for registering. Please login.')
                 return redirect(url_for('users.login'))
