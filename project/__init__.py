@@ -11,9 +11,11 @@ bcrypt = Bcrypt(app)
 db = SQLAlchemy(app)
 
 from project.users.views import users_blueprint
+from project.selections.views import selections_blueprint
 
 # register our blueprints
 app.register_blueprint(users_blueprint)
+app.register_blueprint(selections_blueprint)
 
 @app.errorhandler(404)
 def page_not_found(error):
