@@ -37,3 +37,31 @@ class Standing(db.Model):
 
 	def __repr__(self):
 		return '<Standing {0}>'.format(self.name)
+
+class User_choices(db.Model):
+
+	__tablename__ = 'user_choices'
+
+	home = db.Column(db.String, primary_key=True, unique=False, nullable=False)
+	draw = db.Column(db.String, unique=False, nullable=False)
+	away = db.Column(db.String, unique=False, nullable=False)
+
+	def __init__(self, home=None, draw=None, away=None):
+		self.home = home
+		self.draw = draw
+		self.away = away
+
+	def __repr__(self):
+		return '<User_choices {0}>'.format(self.home)
+
+class Picks(db.Model):
+
+	__tablename__ = 'picks'
+
+	pick = db.Column(db.String, primary_key=True, unique=False, nullable=False)
+
+	def __init__(self, pick=None):
+		self.pick = pick
+
+	def __repr__(self):
+		return '<Picks {0}>'.format(self.pick)

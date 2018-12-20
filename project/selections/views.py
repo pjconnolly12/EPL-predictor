@@ -4,7 +4,6 @@
 #### imports ####
 #################
 
-from bs4 import BeautifulSoup
 from functools import wraps
 from flask import flash, redirect, render_template, \
     request, session, url_for, Blueprint
@@ -12,7 +11,7 @@ from sqlalchemy.exc import IntegrityError
 
 from .forms import SelectionForm
 from project import db
-import requests
+from project.models import User_choices, Picks
 
 
 ################
@@ -36,27 +35,37 @@ def login_required(test):
             return redirect(url_for('users.login'))
     return wrap
 
-def pick_selections():
-    """Creates list of teams to be provided as pick options"""
-	page = requests.get("https://www.sportsinteraction.com/soccer/england/premier-league-betting/")
-	soup = BeautifulSoup(page.content, 'html.parser')
-	matches = soup.find_all(class_="game")    
-    pick_options = []
-    for games in matches:
-        teams = games.find_all(class_="name")
-        if len(teams) == 0:
-            continue
-        else:
-        	for names in teams:
-        		message.append(names.get_text())
-    return pick_options
+def user_choices():
+	return db.session.query(User_choices)
 
 
 ##########################
 ########  routes #########
 ##########################
 
-@users_blueprint.route('/selections/', methods=['GET', 'POST'])
+@selections_blueprint.route('/selections/', methods=['GET', 'POST'])
+@login_required
 def selections():
-    pick_selections()
-    return render_template('selections.html')
+	return render_template(
+		'selections.html',
+	 	form=SelectionForm(request.form),
+	 	user_choices=user_choices(),
+	 )
+
+@selections_blueprint.route('/picks/', methods=['GET', 'POST'])
+@login_required
+def picks():
+	error = None
+	form = SelectionForm(request.form)
+	if request.method == 'POST':
+		if form.validate_on_submit():
+			new_picks = Picks(
+				form.selection.data)
+			db.session.add(new_picks)
+			db.session.commit()
+			flash('Picks were entered successfully. Thanks!')
+			return redirect(url_for('users.standings'))
+	return render_template(
+		'standings.html',
+		participants=participants()
+	)

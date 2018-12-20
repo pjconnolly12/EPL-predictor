@@ -2,14 +2,16 @@
 #### imports ####
 #################
 
+from bs4 import BeautifulSoup
 from functools import wraps
 from flask import flash, redirect, render_template, \
     request, session, url_for, Blueprint
 from sqlalchemy.exc import IntegrityError
 
 from .forms import RegisterForm, LoginForm
-from project import db, bcrypt
-from project.models import User, Standing
+from project import db, bcrypt, selections
+from project.models import User, Standing, User_choices
+import requests
 
 
 ################
@@ -34,6 +36,30 @@ def login_required(test):
             return redirect(url_for('users.login'))
     return wrap
 
+def pick_selections():
+    """Creates list of teams to be provided as pick options"""
+    page = requests.get("https://www.sportsinteraction.com/soccer/england/premier-league-betting/")
+    soup = BeautifulSoup(page.content, 'html.parser')
+    matches = soup.find_all(class_="game")    
+    pick_options = []
+    for games in matches:
+        teams = games.find_all(class_="name")
+        if len(teams) == 0:
+            continue
+        else:
+            for names in teams:
+                    pick_options.append(names.get_text())
+    return pick_options
+
+def create_pick_db(data):
+    count = 0
+    for rows in range(int(len(data)/3)):
+        db.session.add(
+            User_choices(data[count], data[count+1], data[count+2])
+        )
+        count += 3
+    db.session.commit()
+
 def participants():
     return db.session.query(Standing).order_by(Standing.points.desc())
 
@@ -54,6 +80,9 @@ def logout():
 
 @users_blueprint.route('/', methods=['GET', 'POST'])
 def login():
+    old_fixtures = db.session.query(User_choices)
+    old_fixtures.delete()
+    create_pick_db(pick_selections())
     error = None
     form = LoginForm(request.form)
     if request.method == 'POST':
